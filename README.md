@@ -80,7 +80,7 @@ When a user clicks the Good Dog/Bad Dog button, two things should happen:
   new isGoodDog value
 
 You can update a dog by making a `PATCH` request to `/pups/:id` and including
-the updated `isGoodDog` status in the body of the request.
+the updated `isGoodDog` status in the body of the request. 
 
 ### BONUS! STEP 5: FILTER GOOD DOGS
 
