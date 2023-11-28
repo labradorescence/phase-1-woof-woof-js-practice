@@ -1,34 +1,72 @@
 const dogList = document.querySelector("#dog-bar")
 const dogInfo = document.querySelector("#dog-info")
+const offAndOn = document.querySelector("#good-dog-filter")
 
-fetch("http://localhost:3000/pups")
-    .then(response => response.json())
-    .then( dogData => {
-        dogInHandle(dogData)
-    })
+function getAllDogs(){
+    return fetch("http://localhost:3000/pups")
+       .then(response => response.json())
+    // .then( dogData => {
+    //     dogInHandle(dogData)
+    // })
+}
 
 
-function dogInHandle(dogData){ 
-
-    dogData.forEach( oneDog => { 
-        const dogListItem = document.createElement("span")
-        dogListItem.textContent = oneDog.name
-        dogList.appendChild(dogListItem)
-
-        dogListItem.addEventListener("click", () => {
-            showDetails(oneDog)
-        })
+function filterGoodDog(){
+    offAndOn.addEventListener("click", () => {
+        // if(offAndOn.textContent === 'Filter good dogs: OFF' ) {
+        //     offAndOn.textContent = 'Filter good dogs: ON'
+        //     } else {
+        //         offAndOn.textContent = 'Filter good dogs: OFF'
+        //     }
+        offAndOn.innerText.includes("OFF")? offAndOn.innerText="Filter good dogs: ON":offAndOn.innerText="Filter good dogs: OFF"
+        updateDogBar()
     })
 }
 
-// When a user clicks on a pup's span in the div#dog-bar, that pup's info (image, name, and isGoodDog status) should show up in the div with the id of "dog-info". Display the pup's info in the div with the following elements:
+function updateDogBar(){
+    if(offAndOn.innerText.includes("OFF")){
+        getAllDogs()//get all the dogs from the server
+            .then(dogs => addPupsToDogBar(dogs))
+    }else{
+        getAllDogs()
+            .then(dogs => addPupsToDogBar(dogs, true))
+    }
+}
 
-{/* <img src="dog_image_url" />
-<h2>Mr. Bonkers</h2>
-<button>Good Dog!</button> */}
+filterGoodDog()
+
+
+function addPupsToDogBar(dogData, filter=false){
+    // updateDogBar.innerHTML = ""
+    dogList.innerHTML = "" ////<-----
+
+    if(filter){
+        dogData.filter(oneDog => oneDog.isGoodDog)
+            .forEach(addDogSpanToNav)
+    }else{
+
+        dogData.forEach(addDogSpanToNav)
+    }
+}
+
+function addDogSpanToNav(oneDog){
+    const dogListItem = document.createElement("span")
+    dogListItem.textContent = oneDog.name
+    dogList.appendChild(dogListItem)
+
+    dogListItem.addEventListener("click", () => {
+        showDetails(oneDog)
+    })
+}
+
+// function dogInHandle(dogData){ 
+//     dogData.forEach( oneDog => { 
+//     })
+// }
+
 
 function showDetails (oneDog) {
-    console.log(oneDog.isGoodDog)
+ 
     dogInfo.innerHTML = ""
     
     const dogImg = document.createElement("img")
@@ -38,12 +76,28 @@ function showDetails (oneDog) {
     dogImg.src = oneDog.image
     dogName.textContent = oneDog.name
     dogStatus.textContent = oneDog.isGoodDog? "Good Dog!": "Bad Dog!";
-    console.log(dogStatus)
-
-    // dogInfo.appendChild(dogImg)
-    // dogInfo.appendChild(dogName)
-    // dogInfo.appendChild(dogStatus)
 
     dogInfo.append(dogImg, dogName, dogStatus)
 
+    dogStatus.addEventListener("click", () => {
+        oneDog.isGoodDog = !oneDog.isGoodDog
+
+        let updatingData = { isGoodDog: oneDog.isGoodDog }
+
+        patchDog( oneDog.id , updatingData )
+            .then(updatedDog => {
+                dogStatus.textContent = updatedDog.isGoodDog? "Good Dog!": "Bad Dog!";
+            }) 
+    })
+}
+
+function patchDog( urlId, updatingData){
+    return fetch(`http://localhost:3000/pups/${urlId}`, {
+        method: "PATCH",
+        headers: {
+            "Content-type": "application/json"
+        },
+        body: JSON.stringify(updatingData)
+    })
+    .then(response => response.json())
 }
