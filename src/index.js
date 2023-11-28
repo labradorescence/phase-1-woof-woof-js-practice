@@ -10,32 +10,7 @@ function getAllDogs(){
     // })
 }
 
-
-function filterGoodDog(){
-    offAndOn.addEventListener("click", () => {
-        // if(offAndOn.textContent === 'Filter good dogs: OFF' ) {
-        //     offAndOn.textContent = 'Filter good dogs: ON'
-        //     } else {
-        //         offAndOn.textContent = 'Filter good dogs: OFF'
-        //     }
-        offAndOn.innerText.includes("OFF")? offAndOn.innerText="Filter good dogs: ON":offAndOn.innerText="Filter good dogs: OFF"
-        updateDogBar()
-    })
-}
-
-function updateDogBar(){
-    if(offAndOn.innerText.includes("OFF")){
-        getAllDogs()//get all the dogs from the server
-            .then(dogs => addPupsToDogBar(dogs))
-    }else{
-        getAllDogs()
-            .then(dogs => addPupsToDogBar(dogs, true))
-    }
-}
-
-filterGoodDog()
-
-
+//STEP 2: ADD PUPS TO DOG BAR + STEP 5
 function addPupsToDogBar(dogData, filter=false){
     // updateDogBar.innerHTML = ""
     dogList.innerHTML = "" ////<-----
@@ -49,6 +24,7 @@ function addPupsToDogBar(dogData, filter=false){
     }
 }
 
+//STEP 2: ADD PUPS TO DOG BAR
 function addDogSpanToNav(oneDog){
     const dogListItem = document.createElement("span")
     dogListItem.textContent = oneDog.name
@@ -64,7 +40,7 @@ function addDogSpanToNav(oneDog){
 //     })
 // }
 
-
+//STEP 3: SHOW MORE INFO ABOUT EACH PUP
 function showDetails (oneDog) {
  
     dogInfo.innerHTML = ""
@@ -78,7 +54,8 @@ function showDetails (oneDog) {
     dogStatus.textContent = oneDog.isGoodDog? "Good Dog!": "Bad Dog!";
 
     dogInfo.append(dogImg, dogName, dogStatus)
-
+ 
+    //STEP 4: TOGGLE GOOD DOG
     dogStatus.addEventListener("click", () => {
         oneDog.isGoodDog = !oneDog.isGoodDog
 
@@ -91,6 +68,8 @@ function showDetails (oneDog) {
     })
 }
 
+
+//STEP 4: TOGGLE GOOD DOG
 function patchDog( urlId, updatingData){
     return fetch(`http://localhost:3000/pups/${urlId}`, {
         method: "PATCH",
@@ -101,3 +80,30 @@ function patchDog( urlId, updatingData){
     })
     .then(response => response.json())
 }
+
+
+//STEP 5: FILTER GOOD DOGS
+function filterGoodDog(){
+    offAndOn.addEventListener("click", () => {
+        // if(offAndOn.textContent === 'Filter good dogs: OFF' ) {
+        //     offAndOn.textContent = 'Filter good dogs: ON'
+        //     } else {
+        //         offAndOn.textContent = 'Filter good dogs: OFF'
+        //     }
+        offAndOn.innerText.includes("OFF")? offAndOn.innerText="Filter good dogs: ON":offAndOn.innerText="Filter good dogs: OFF"
+        updateDogBar()
+    })
+}
+
+//STEP 5: FILTER GOOD DOGS
+function updateDogBar(){
+    if(offAndOn.innerText.includes("OFF")){
+        getAllDogs()//get all the dogs from the server
+            .then(dogs => addPupsToDogBar(dogs))
+    }else{
+        getAllDogs()
+            .then(dogs => addPupsToDogBar(dogs, true))
+    }
+}
+
+filterGoodDog()
