@@ -10,6 +10,23 @@ function getAllDogs(){
     // })
 }
 
+//STEP 2: ADD PUPS TO DOG BAR 
+// fetch("http://localhost:3000/pups")
+// .then(response => response.json())
+// .then(dogArr => {
+//     console.log(dogArr)
+//     dogArr.map(eachDog =>addPupsToDogBar(eachDog))
+// })
+
+// function addPupsToDogBar(dogInfo){
+//     console.log(dogInfo)
+//     const dogSpan = document.createElement("span")
+//     dogSpan.innerText = dogInfo.name
+//     console.log(dogSpan)
+
+//     dogBar.appendChild(dogSpan)
+// }
+
 //STEP 2: ADD PUPS TO DOG BAR + STEP 5
 function addPupsToDogBar(dogData, filter=false){
     // updateDogBar.innerHTML = ""
