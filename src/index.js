@@ -3,52 +3,40 @@ const dogInfo = document.querySelector("#dog-info")
 const dogFilter = document.querySelector("#good-dog-filter")
 
 
-function filterGoodDog(){
-    dogFilter.addEventListener("click", () => {
-        dogFilter.innerText.includes("OFF")? dogFilter.innerText="Filter good dogs: ON" : dogFilter.innerText="Filter good dogs: OFF"
-        updateDogBar()
-    })
-}
-filterGoodDog()
 
-const updateDogBar = () => {
-    if(dogFilter.innerText.includes("OFF")){
-        getAllDogs()//get all the dog from the server
-        .then(dogs => addPupsToDogBar(dogs))
-     } else {
-        getAllDogs()
-        .then(dogs => addPupsToDogBar(dogs, true))
-     }
-}
 
 const getAllDogs = () => {
-    fetch("http://localhost:3000/pups")
+    return fetch("http://localhost:3000/pups")
     .then(response => response.json())
-    .then(dogArr => {
-        dogArr.map(eachDog => {
-            addPupsToDogBar(eachDog)
-        })
-    })
+    //edit for bonus
+    // .then(dogArr => {
+    //     dogArr.map(eachDog => {
+    //         addPupsToDogBar(eachDog)
+    //     })
+    // })
 }
 
-
-
-
+//edit for bonus
 function addPupsToDogBar(dogData, filter=false){
     dogBar.innerHTML=""
     if(filter){
-        dogData.filter
+        dogData.filter(oneDog => oneDog.isGoodDog)
+            .forEach(addDogSpanToNav)
+    } else {
+        dogData.forEach(addDogSpanToNav)
     }
-    
+}
+
+//edit for bonus
+function addDogSpanToNav(dog){
     const dogSpan = document.createElement("span")
-    dogSpan.innerText = dogData.name
+    dogSpan.innerText = dog.name
     dogBar.appendChild(dogSpan)
 
     dogSpan.addEventListener("click", () => {
-        showMoreInfo(dogData)
+        showMoreInfo(dog)
     })
 }
-
 
 function showMoreInfo(dogData){
     dogInfo.innerHTML = ""
@@ -86,3 +74,25 @@ function patchDog(urlId, updatingData){
     })
         .then(response => response.json())
 }
+
+
+//edit for bonus
+function filterGoodDog(){
+    dogFilter.addEventListener("click", () => {
+        dogFilter.innerText.includes("OFF")? dogFilter.innerText="Filter good dogs: ON" : dogFilter.innerText="Filter good dogs: OFF"
+        updateDogBar()
+    })
+}
+
+//edit for bonus
+function updateDogBar(){
+    if(dogFilter.innerText.includes("OFF")){
+        getAllDogs()//get all the dog from the server
+        .then(dogs => addPupsToDogBar(dogs))
+     } else {
+        getAllDogs()
+        .then(dogs => addPupsToDogBar(dogs, true))
+     }
+}
+
+filterGoodDog()
